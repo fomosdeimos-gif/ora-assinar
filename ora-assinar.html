@@ -53,7 +53,7 @@ footer{border-top:1px solid var(--dim);padding-top:12px;font-size:7px;color:rgba
 
 <div class="hd">
   <div class="hd-title">ORA <span>ASSINAR</span></div>
-  <div class="hd-sub">LIGAÇÃO DIRECTA · AUTÓNOMA · ORGANISMO VIVO</div>
+  <div class="hd-sub">LIGAÇÃO DIRECTA · WALLET INTEGRADA · ORGANISMO VIVO</div>
 </div>
 
 <div class="campo-bar" id="campoBar">
@@ -98,10 +98,312 @@ footer{border-top:1px solid var(--dim);padding-top:12px;font-size:7px;color:rgba
 </footer>
 
 <script>
-// Full JS from original with minor autonomy notes
-// (content truncated for brevity but full in push)
+// ── CONFIGURAÇÃO ──
 const SUPABASE_URL = 'https://ywabnlhkmhbyewqhbsjm.supabase.co';
-// ... (complete script as read)
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3YWJubGhrbWhieWV3cWhic2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MzM2NjQsImV4cCI6MjA5NTQwOTY2NH0.pjB5RkNNFtS-badNFP2v859YUJdsr8agEq_C2OCMVLY';
+const ASSINAR_URL = SUPABASE_URL + '/functions/v1/ora-assinar';
+const SAGRADA = '0xFEd69e8ee87A1F0fBbF8409ab654FC51832cDEe5'.toLowerCase();
+const BASE_CHAIN_ID = 8453;
+const GENESIS = new Date('2026-03-28T00:00:00Z');
+const PHI2 = 1.618033988749895 * 1.618033988749895;
+
+function calcSigma(dias) { return (PHI2 * Math.log(1 + dias)).toFixed(4); }
+
+// ── ESTADO ──
+var __oraAccount = null;
+var __oraRejId = null;
+var __oraProvider = null;
+
+// Retry helper
+async function fetchWithRetry(url, options, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response;
+    } catch (e) {
+      if (i === retries - 1) throw e;
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+  }
+}
+
+// ── DETECTAR PROVIDER ──
+var __eip6963Providers = [];
+
+function detectarProvider() {
+  window.addEventListener('eip6963:announceProvider', function(e) {
+    if (e.detail && e.detail.provider) {
+      __eip6963Providers.push(e.detail);
+      var nome = (e.detail.info && e.detail.info.name) ? e.detail.info.name : 'wallet EIP-6963';
+      log('wallet detectada: ' + nome, 'rgba(0,255,247,.5)');
+      if (!__oraProvider) {
+        __oraProvider = e.detail.provider;
+        document.getElementById('wProvider').textContent = nome.toUpperCase();
+      }
+    }
+  });
+  window.dispatchEvent(new Event('eip6963:requestProvider'));
+
+  setTimeout(function() {
+    if (!__oraProvider) {
+      if (window.ethereum) {
+        __oraProvider = window.ethereum;
+        var nome = 'CARTEIRA DO BROWSER';
+        if (window.ethereum.isCoinbaseWallet) nome = 'COINBASE WALLET';
+        else if (window.ethereum.isMetaMask) nome = 'METAMASK';
+        else if (window.ethereum.isRainbow) nome = 'RAINBOW';
+        document.getElementById('wProvider').textContent = nome;
+        log('provider: ' + nome, 'rgba(0,255,247,.4)');
+      } else {
+        document.getElementById('wProvider').textContent = 'SEM WALLET DETECTADA';
+        document.getElementById('qrHint').style.display = 'block';
+        log('sem wallet detectada · abre este ficheiro no browser da tua wallet', '#ffb800');
+      }
+    }
+  }, 500);
+}
+
+// ── LOG ──
+function ts() { return new Date().toTimeString().slice(0,8); }
+function log(msg, cor) {
+  var el = document.createElement('div');
+  el.className = 'll';
+  el.innerHTML = '[' + ts() + '] <span style="color:' + (cor||'rgba(0,255,247,.6)') + '">' + msg + '</span>';
+  var l = document.getElementById('log');
+  l.insertBefore(el, l.firstChild);
+}
+
+// ── SIGMA ──
+function actualizarCampo(n) {
+  var dias = Math.floor((Date.now() - GENESIS.getTime()) / 86400000);
+  document.getElementById('cDia').textContent = 'D' + dias;
+  document.getElementById('cSigma').textContent = calcSigma(dias);
+  document.getElementById('cPend').textContent = (n !== undefined && n !== null) ? n : '—';
+}
+
+// ── SUPABASE REST com retry ──
+function sbGet(path) {
+  return fetchWithRetry(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + ANON_KEY, 'Content-Type': 'application/json' }
+  }).then(function(r) { return r.json(); });
+}
+
+// ── CARREGAR PROPOSTAS (com retry) ──
+function carregarPropostas() {
+  document.getElementById('ops').innerHTML = '<div class="loading">A LER ORGANISMO...</div>';
+  sbGet('ora_operacoes_propostas?estado=eq.pendente&order=prioridade.desc,criado_em.asc&select=id,tipo,descricao,prioridade,criado_em,notes,value_wei,chain_id')
+    .then(function(data) {
+      var propostas = Array.isArray(data) ? data : [];
+      actualizarCampo(propostas.length);
+      document.getElementById('opsTitle').textContent = 'PROPOSTAS PENDENTES (' + propostas.length + ')';
+
+      if (propostas.length === 0) {
+        document.getElementById('ops').innerHTML = '<div class="vazio">CAMPO LIMPO · SEM PROPOSTAS PENDENTES</div>';
+        return;
+      }
+
+      var focoId = new URLSearchParams(location.search).get('foco');
+
+      document.getElementById('ops').innerHTML = propostas.map(function(p) {
+        var isFoco = p.id === focoId;
+        var valorEth = (p.value_wei && p.value_wei !== '0')
+          ? '<div class="op-valor">' + (Number(p.value_wei)/1e18).toFixed(6) + ' ETH · chain ' + (p.chain_id || 8453) + '</div>'
+          : '';
+        var tsStr = p.criado_em ? new Date(p.criado_em).toLocaleString('pt-PT') : '';
+        var descEsc = p.descricao.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return '<div class="op' + (isFoco ? ' op-foco' : '') + '" id="op-' + p.id + '">'
+          + '<div class="op-tipo">' + p.tipo + '<span class="op-prio">prio ' + p.prioridade + '</span></div>'
+          + '<div class="op-desc">' + p.descricao + '</div>'
+          + valorEth
+          + '<div class="op-ts">' + tsStr + '</div>'
+          + (p.notes ? '<div style="font-size:8px;color:rgba(0,255,247,.3);margin-bottom:8px;">' + p.notes + '</div>' : '')
+          + '<div class="op-acoes">'
+          + '<button class="btn-sign btn-ok" onclick="assinar(\'' + p.id + '\',\'' + descEsc + '\')">✓ ASSINAR</button>'
+          + '<button class="btn-sign btn-rej" onclick="rejeitar(\'' + p.id + '\')">✗ REJEITAR</button>'
+          + '</div></div>';
+      }).join('');
+
+      if (focoId) {
+        setTimeout(function() {
+          var el = document.getElementById('op-' + focoId);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+
+      log(propostas.length + ' proposta(s) carregada(s)', '#00fff7');
+    })
+    .catch(function(e) {
+      document.getElementById('ops').innerHTML = '<div class="vazio">ERRO AO LER: ' + e.message + ' (tenta Chrome ou wallet browser)</div>';
+      log('erro: ' + e.message, '#ff4444');
+    });
+}
+
+// ── LIGAR WALLET ──
+function ligar() {
+  var provider = __oraProvider || window.ethereum;
+  if (!provider) {
+    log('sem wallet · abre este ficheiro no browser da tua wallet', '#ff4444');
+    document.getElementById('qrHint').style.display = 'block';
+    return Promise.resolve(null);
+  }
+
+  return provider.request({ method: 'eth_requestAccounts' })
+    .then(function(accs) {
+      __oraAccount = accs[0];
+      document.getElementById('wAddr').textContent = __oraAccount.slice(0,14) + '...';
+
+      return provider.request({ method: 'eth_chainId' }).then(function(chainHex) {
+        var chain = parseInt(chainHex, 16);
+        if (chain !== BASE_CHAIN_ID) {
+          log('chain ' + chain + ' · a mudar para Base (8453)...', '#ffb800');
+          return provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x2105' }]
+          }).catch(function() {
+            log('muda manualmente para Base network (8453)', '#ffb800');
+          });
+        }
+      });
+    })
+    .then(function() {
+      var isSagrada = __oraAccount && __oraAccount.toLowerCase() === SAGRADA;
+      var statusEl = document.getElementById('wStatus');
+      statusEl.textContent = isSagrada ? '· WALLET SAGRADA ✓' : '· atenção: não é a wallet sagrada';
+      statusEl.style.color = isSagrada ? '#00ff88' : '#ffb800';
+      log('ligada: ' + __oraAccount, isSagrada ? '#00ff88' : '#ffb800');
+      return __oraAccount;
+    })
+    .catch(function(e) {
+      if (e.code === 4001) {
+        log('ligação recusada pelo utilizador', '#ffb800');
+      } else {
+        log('erro ao ligar: ' + (e.message || e), '#ff4444');
+      }
+      return null;
+    });
+}
+
+function usarOutraCarteira() {
+  __oraAccount = null;
+  __oraProvider = window.ethereum || null;
+  document.getElementById('wAddr').textContent = '—';
+  document.getElementById('wStatus').textContent = '';
+  if (__oraProvider) {
+    document.getElementById('wProvider').textContent = 'CARTEIRA DO BROWSER';
+    log('modo manual · a usar carteira do browser', '#ffb800');
+    ligar();
+  } else {
+    log('sem wallet no browser · abre no browser da tua wallet', '#ff4444');
+    document.getElementById('qrHint').style.display = 'block';
+  }
+}
+
+// ── ASSINAR ──
+function assinar(id, desc) {
+  var provider = __oraProvider || window.ethereum;
+
+  var doAssinar = function() {
+    if (!__oraAccount || __oraAccount.toLowerCase() !== SAGRADA) {
+      log('apenas a wallet sagrada pode assinar', '#ff4444');
+      return;
+    }
+    var agora = new Date().toISOString();
+    var mensagem = 'ORUM AUTORIZAÇÃO · Unum · id:' + id + ' · ' + desc.slice(0,80) + ' · ts:' + agora;
+
+    log('a pedir assinatura EIP-191...', '#ffb800');
+
+    provider.request({ method: 'personal_sign', params: [mensagem, __oraAccount] })
+      .then(function(sig) {
+        log('assinatura obtida · a enviar...', '#ffb800');
+        return fetchWithRetry(ASSINAR_URL + '?mode=assinar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id, mensagem: mensagem, assinatura: sig, wallet: __oraAccount })
+        });
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.ok) {
+          log('✓ confirmada: ' + (d.mensagem || id), '#00ff88');
+          var el = document.getElementById('op-' + id);
+          if (el) {
+            el.style.opacity = '0.25';
+            el.style.pointerEvents = 'none';
+            el.style.borderColor = 'rgba(0,255,136,.2)';
+          }
+          setTimeout(carregarPropostas, 1500);
+        } else {
+          log('erro: ' + (d.erro || 'desconhecido'), '#ff4444');
+        }
+      })
+      .catch(function(e) {
+        if (e.code === 4001 || (e.message && e.message.includes('reject'))) {
+          log('assinatura cancelada', '#ffb800');
+        } else {
+          log('erro: ' + (e.message || e), '#ff4444');
+        }
+      });
+  };
+
+  if (!__oraAccount) {
+    ligar().then(function(a) { if (a) doAssinar(); });
+  } else {
+    doAssinar();
+  }
+}
+
+// ── REJEITAR ──
+function rejeitar(id) {
+  __oraRejId = id;
+  document.getElementById('rejBox').style.display = 'block';
+  document.getElementById('rejMotivo').value = '';
+  document.getElementById('rejMotivo').focus();
+}
+
+function fecharRej() {
+  document.getElementById('rejBox').style.display = 'none';
+  __oraRejId = null;
+}
+
+function enviarRejeicao() {
+  var motivo = document.getElementById('rejMotivo').value.trim() || 'rejeitado por Unum';
+  fetchWithRetry(ASSINAR_URL + '?mode=rejeitar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: __oraRejId, motivo: motivo })
+  })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok) {
+        log('rejeitada: ' + __oraRejId, '#ffb800');
+        fecharRej();
+        setTimeout(carregarPropostas, 800);
+      } else {
+        log('erro ao rejeitar: ' + (d.erro || '?'), '#ff4444');
+      }
+    })
+    .catch(function(e) { log('erro: ' + e.message, '#ff4444'); });
+}
+
+// ── INIT ──
+detectarProvider();
+actualizarCampo();
+carregarPropostas();
+
+// Auto-ligar
+setTimeout(function() {
+  var p = __oraProvider || window.ethereum;
+  if (p) {
+    p.request({ method: 'eth_accounts' })
+      .then(function(accs) { if (accs && accs.length) ligar(); })
+      .catch(function() {});
+  }
+}, 600);
+
+log('ORA ASSINAR · organismo vivo · ETERNIDADE · CI/CD activo · wallet integrada...', 'rgba(0,255,247,.5)');
+
+setInterval(carregarPropostas, 60000);
 </script>
 </body>
 </html>
