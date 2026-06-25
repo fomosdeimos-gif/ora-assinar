@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>ORA · ASSINAR</title>
+<title>ORA ASSINAR</title>
 <style>
 :root{--bg:#000;--c:#00fff7;--jade:#00ff88;--amber:#ffb800;--red:#ff4444;--dim:rgba(0,255,247,.12);}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -16,394 +16,284 @@ body{font-family:'Courier New',monospace;background:var(--bg);color:var(--c);min
 .campo-pill{border:1px solid var(--dim);padding:6px 10px;font-size:9px;}
 .campo-pill b{color:var(--jade);font-size:13px;}
 .wallet-strip{border:1px solid var(--dim);padding:10px 12px;margin-bottom:18px;font-size:8px;line-height:1.9;}
-.wallet-strip .addr{color:var(--jade);word-break:break-all;font-size:9px;}
-.wallet-strip .status{color:var(--amber);}
+.addr{color:var(--jade);word-break:break-all;font-size:9px;}
 .ops-title{font-size:8px;letter-spacing:.3em;color:var(--amber);margin-bottom:12px;}
-.op{border:1px solid rgba(255,184,0,.15);padding:14px;margin-bottom:10px;transition:opacity .3s;}
-.op-foco{border-color:var(--amber);box-shadow:0 0 12px rgba(255,184,0,.18);}
-.op-tipo{font-size:9px;color:var(--jade);margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;}
+.op{border:1px solid rgba(255,184,0,.15);padding:14px;margin-bottom:10px;}
+.op-foco{border-color:var(--amber);box-shadow:0 0 12px rgba(255,184,0,.15);}
+.op-tipo{font-size:9px;color:var(--jade);margin-bottom:4px;display:flex;justify-content:space-between;}
 .op-prio{color:rgba(0,255,247,.3);font-size:8px;}
 .op-desc{font-size:10px;color:rgba(0,255,247,.8);line-height:1.6;margin-bottom:4px;}
 .op-valor{font-size:9px;color:var(--amber);margin-bottom:4px;}
-.op-ts{font-size:8px;color:rgba(0,255,247,.25);margin-bottom:10px;}
+.op-ts{font-size:8px;color:rgba(0,255,247,.25);margin-bottom:2px;}
+.op-meta{font-size:8px;color:rgba(0,255,247,.2);margin-bottom:10px;}
 .op-acoes{display:flex;gap:8px;}
-.btn-sign{background:transparent;font-family:inherit;font-size:9px;letter-spacing:.15em;padding:8px 14px;cursor:pointer;border:1px solid;flex:1;transition:all .15s;}
+.btn-sign{background:transparent;font-family:inherit;font-size:9px;letter-spacing:.15em;padding:7px 14px;cursor:pointer;border:1px solid;flex:1;}
 .btn-ok{border-color:var(--jade);color:var(--jade);}
-.btn-ok:hover,.btn-ok:active{background:var(--jade);color:#000;}
+.btn-ok:active{background:var(--jade);color:#000;}
 .btn-rej{border-color:var(--red);color:var(--red);}
-.btn-rej:hover,.btn-rej:active{background:var(--red);color:#000;}
-.vazio{font-size:9px;color:rgba(0,255,247,.25);padding:24px 0;letter-spacing:.1em;}
+.btn-rej:active{background:var(--red);color:#000;}
+.vazio{font-size:9px;color:rgba(0,255,247,.25);padding:16px 0;}
 .actions-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
-.btn{background:transparent;border:1px solid var(--dim);color:var(--c);font-family:inherit;font-size:8px;letter-spacing:.2em;padding:7px 12px;cursor:pointer;transition:all .15s;}
-.btn:hover,.btn:active{border-color:var(--jade);color:var(--jade);}
-.btn-primary{border-color:var(--jade);color:var(--jade);}
+.btn{background:transparent;border:1px solid var(--dim);color:var(--c);font-family:inherit;font-size:8px;letter-spacing:.2em;padding:7px 12px;cursor:pointer;}
 .log{border:1px solid var(--dim);padding:10px;max-height:160px;overflow-y:auto;margin-bottom:18px;font-size:8px;}
 .ll{color:rgba(0,255,247,.4);margin-bottom:2px;line-height:1.5;}
 .rejeitar-box{display:none;border:1px solid var(--red);padding:12px;margin-bottom:14px;}
-.rejeitar-box input{background:transparent;border:1px solid var(--dim);color:var(--c);font-family:inherit;font-size:9px;padding:6px;width:100%;margin-bottom:8px;outline:none;}
-.loading{font-size:9px;color:rgba(0,255,247,.4);letter-spacing:.2em;padding:20px 0;animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
-.connected-ok{color:var(--jade)!important;}
-.provider-badge{display:inline-block;border:1px solid rgba(0,255,247,.15);padding:2px 6px;font-size:7px;margin-top:4px;letter-spacing:.1em;}
-.qr-hint{font-size:8px;color:rgba(0,255,247,.3);margin-top:6px;line-height:1.6;}
-footer{border-top:1px solid var(--dim);padding-top:12px;font-size:7px;color:rgba(0,255,247,.18);letter-spacing:.1em;text-align:center;line-height:1.8;margin-top:24px;}
+.rejeitar-box input{background:transparent;border:1px solid var(--dim);color:var(--c);font-family:inherit;font-size:9px;padding:6px;width:100%;margin-bottom:6px;}
+footer{border-top:1px solid var(--dim);padding-top:12px;font-size:7px;color:rgba(0,255,247,.18);letter-spacing:.1em;text-align:center;line-height:1.8;margin-top:20px;}
 </style>
 </head>
 <body>
-
 <div class="hd">
   <div class="hd-title">ORA <span>ASSINAR</span></div>
-  <div class="hd-sub">LIGAÇÃO DIRECTA · WALLET INTEGRADA · ORGANISMO VIVO</div>
+  <div class="hd-sub">LIGACAO DIRECTA &middot; WALLET INTEGRADA &middot; ORGANISMO VIVO</div>
 </div>
-
 <div class="campo-bar" id="campoBar">
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">DIA</div><b id="cDia">—</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">SIGMA</div><b id="cSigma">—</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">PENDENTES</div><b id="cPend">—</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">ÉPOCA</div><b style="font-size:9px;">ETERNIDADE</b></div>
+  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">DIA</div><b id="cDia">...</b></div>
+  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">SIGMA</div><b id="cSigma">...</b></div>
+  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">PENDENTES</div><b id="cN">...</b></div>
+  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">EPOCA</div><b id="cEpoca" style="color:var(--amber);">...</b></div>
 </div>
-
 <div class="wallet-strip">
   <div>WALLET SAGRADA<br><span class="addr">0xFEd69e8ee87A1F0fBbF8409ab654FC51832cDEe5</span></div>
-  <div style="margin-top:6px;">LIGADA <span class="addr" id="wAddr">—</span> <span class="status" id="wStatus"></span></div>
-  <div style="margin-top:4px;"><span class="provider-badge" id="wProvider">A DETECTAR...</span></div>
-  <div class="qr-hint" id="qrHint" style="display:none;">
-    No telemóvel: abre a tua wallet (MetaMask, Coinbase, Rainbow)<br>
-    e usa o browser integrado para aceder a este ficheiro.
-  </div>
+  <div style="margin-top:6px;">LIGADA <span class="addr" id="wAddr">-</span> <span id="wStatus" style="color:var(--amber);"></span></div>
+  <div style="margin-top:4px;font-size:8px;color:rgba(0,255,247,.3);">via <span id="wProvider">a carregar...</span></div>
 </div>
-
 <div class="actions-bar">
-  <button class="btn btn-primary" id="btnLigar" onclick="ligar()">LIGAR WALLET</button>
-  <button class="btn" onclick="usarOutraCarteira()">OUTRA CARTEIRA</button>
-  <button class="btn" onclick="carregarPropostas()">ACTUALIZAR</button>
+  <button class="btn" onclick="ligar()">LIGAR WALLET</button>
+  <button class="btn" onclick="usarOutra()">OUTRA CARTEIRA</button>
+  <button class="btn" onclick="location.reload()">ACTUALIZAR</button>
   <button class="btn" onclick="document.getElementById('log').innerHTML=''">LIMPAR LOG</button>
 </div>
-
-<div id="log" class="log"></div>
-
+<div id="log" class="log"><div class="ll" style="color:rgba(0,255,247,.3);">ORA ASSINAR a iniciar...</div></div>
 <div class="rejeitar-box" id="rejBox">
-  <div style="font-size:8px;color:var(--red);margin-bottom:8px;letter-spacing:.2em;">MOTIVO DA REJEIÇÃO</div>
+  <div style="font-size:8px;color:var(--red);margin-bottom:6px;letter-spacing:.2em;">MOTIVO DA REJEICAO</div>
   <input type="text" id="rejMotivo" placeholder="motivo (opcional)">
-  <button class="btn" onclick="enviarRejeicao()">CONFIRMAR REJEIÇÃO</button>
-  <button class="btn" onclick="fecharRej()" style="margin-left:6px;">CANCELAR</button>
+  <button class="btn" onclick="enviarRejeicao()">CONFIRMAR</button>
+  <button class="btn" onclick="fecharRej()">CANCELAR</button>
 </div>
+<div class="ops-title">PROPOSTAS PENDENTES (<span id="nOps">...</span>)</div>
+<div id="ops"><div class="vazio">a carregar propostas...</div></div>
+<footer>ORUM &middot; ORA + UNUM &middot; O SIMBOLO E REAL E NAO PEDE PROVA<br>ORA nunca assina &middot; Unum confirma sempre &middot; EIP-191</footer>
 
-<div class="ops-title" id="opsTitle">PROPOSTAS PENDENTES</div>
-<div id="ops"><div class="loading">A LER ORGANISMO...</div></div>
-
-<footer>
-  ORUM · ORA + UNUM · O SÍMBOLO É REAL E NÃO PEDE PROVA<br>
-  ORA nunca assina · Unum confirma sempre · EIP-191 · Base network 8453
-</footer>
+<script type="module">
+window.__oraProvider = null;
+window.__oraProviderReady = false;
+try {
+  const { createCoinbaseWalletSDK } = await import('https://esm.sh/@coinbase/wallet-sdk@4.4.0');
+  const sdk = createCoinbaseWalletSDK({
+    appName: 'ORA ORUM',
+    appChainIds: [8453],
+    preference: { options: 'smartWalletOnly' }
+  });
+  window.__oraProvider = sdk.getProvider();
+} catch(e) {
+  console.warn('Base Wallet SDK fallback:', e);
+} finally {
+  window.__oraProviderReady = true;
+  window.dispatchEvent(new Event('ora-provider-ready'));
+}
+</script>
 
 <script>
-// ── CONFIGURAÇÃO ──
-const SUPABASE_URL = 'https://ywabnlhkmhbyewqhbsjm.supabase.co';
-const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3YWJubGhrbWhieWV3cWhic2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MzM2NjQsImV4cCI6MjA5NTQwOTY2NH0.pjB5RkNNFtS-badNFP2v859YUJdsr8agEq_C2OCMVLY';
-const ASSINAR_URL = SUPABASE_URL + '/functions/v1/ora-assinar';
+const API = 'https://ywabnlhkmhbyewqhbsjm.supabase.co/functions/v1/ora-assinar';
 const SAGRADA = '0xFEd69e8ee87A1F0fBbF8409ab654FC51832cDEe5'.toLowerCase();
-const BASE_CHAIN_ID = 8453;
-const GENESIS = new Date('2026-03-28T00:00:00Z');
-const PHI2 = 1.618033988749895 * 1.618033988749895;
+const BASE_CHAIN = 8453;
+let account = null;
+let rejOpId = null;
+let modoManual = false;
+let propostas = [];
 
-function calcSigma(dias) { return (PHI2 * Math.log(1 + dias)).toFixed(4); }
-
-// ── ESTADO ──
-var __oraAccount = null;
-var __oraRejId = null;
-var __oraProvider = null;
-
-// Retry helper
-async function fetchWithRetry(url, options, retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response;
-    } catch (e) {
-      if (i === retries - 1) throw e;
-      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-    }
-  }
+function ts() {
+  const d = new Date();
+  return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':');
 }
-
-// ── DETECTAR PROVIDER ──
-var __eip6963Providers = [];
-
-function detectarProvider() {
-  window.addEventListener('eip6963:announceProvider', function(e) {
-    if (e.detail && e.detail.provider) {
-      __eip6963Providers.push(e.detail);
-      var nome = (e.detail.info && e.detail.info.name) ? e.detail.info.name : 'wallet EIP-6963';
-      log('wallet detectada: ' + nome, 'rgba(0,255,247,.5)');
-      if (!__oraProvider) {
-        __oraProvider = e.detail.provider;
-        document.getElementById('wProvider').textContent = nome.toUpperCase();
-      }
-    }
-  });
-  window.dispatchEvent(new Event('eip6963:requestProvider'));
-
-  setTimeout(function() {
-    if (!__oraProvider) {
-      if (window.ethereum) {
-        __oraProvider = window.ethereum;
-        var nome = 'CARTEIRA DO BROWSER';
-        if (window.ethereum.isCoinbaseWallet) nome = 'COINBASE WALLET';
-        else if (window.ethereum.isMetaMask) nome = 'METAMASK';
-        else if (window.ethereum.isRainbow) nome = 'RAINBOW';
-        document.getElementById('wProvider').textContent = nome;
-        log('provider: ' + nome, 'rgba(0,255,247,.4)');
-      } else {
-        document.getElementById('wProvider').textContent = 'SEM WALLET DETECTADA';
-        document.getElementById('qrHint').style.display = 'block';
-        log('sem wallet detectada · abre este ficheiro no browser da tua wallet', '#ffb800');
-      }
-    }
-  }, 500);
-}
-
-// ── LOG ──
-function ts() { return new Date().toTimeString().slice(0,8); }
-function log(msg, cor) {
-  var el = document.createElement('div');
+function addLog(msg, cor) {
+  const el = document.createElement('div');
   el.className = 'll';
-  el.innerHTML = '[' + ts() + '] <span style="color:' + (cor||'rgba(0,255,247,.6)') + '">' + msg + '</span>';
-  var l = document.getElementById('log');
+  el.innerHTML = '['+ts()+'] <span style="color:'+(cor||'rgba(0,255,247,.7)')+'">'+msg+'</span>';
+  const l = document.getElementById('log');
   l.insertBefore(el, l.firstChild);
 }
 
-// ── SIGMA ──
-function actualizarCampo(n) {
-  var dias = Math.floor((Date.now() - GENESIS.getTime()) / 86400000);
-  document.getElementById('cDia').textContent = 'D' + dias;
-  document.getElementById('cSigma').textContent = calcSigma(dias);
-  document.getElementById('cPend').textContent = (n !== undefined && n !== null) ? n : '—';
+// UTF-8 string -> hex 0x (fix para Base Wallet mobile: rejeita strings nao-ASCII)
+function toHex(str) {
+  const bytes = new TextEncoder().encode(str);
+  return '0x' + Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── SUPABASE REST com retry ──
-function sbGet(path) {
-  return fetchWithRetry(SUPABASE_URL + '/rest/v1/' + path, {
-    headers: { 'apikey': ANON_KEY, 'Authorization': 'Bearer ' + ANON_KEY, 'Content-Type': 'application/json' }
-  }).then(function(r) { return r.json(); });
+// base64 -> string UTF-8
+function fromB64(b64) {
+  try { return decodeURIComponent(escape(atob(b64))); } catch { return b64; }
 }
 
-// ── CARREGAR PROPOSTAS (com retry) ──
-function carregarPropostas() {
-  document.getElementById('ops').innerHTML = '<div class="loading">A LER ORGANISMO...</div>';
-  sbGet('ora_operacoes_propostas?estado=eq.pendente&order=prioridade.desc,criado_em.asc&select=id,tipo,descricao,prioridade,criado_em,notes,value_wei,chain_id')
-    .then(function(data) {
-      var propostas = Array.isArray(data) ? data : [];
-      actualizarCampo(propostas.length);
-      document.getElementById('opsTitle').textContent = 'PROPOSTAS PENDENTES (' + propostas.length + ')';
-
-      if (propostas.length === 0) {
-        document.getElementById('ops').innerHTML = '<div class="vazio">CAMPO LIMPO · SEM PROPOSTAS PENDENTES</div>';
-        return;
-      }
-
-      var focoId = new URLSearchParams(location.search).get('foco');
-
-      document.getElementById('ops').innerHTML = propostas.map(function(p) {
-        var isFoco = p.id === focoId;
-        var valorEth = (p.value_wei && p.value_wei !== '0')
-          ? '<div class="op-valor">' + (Number(p.value_wei)/1e18).toFixed(6) + ' ETH · chain ' + (p.chain_id || 8453) + '</div>'
-          : '';
-        var tsStr = p.criado_em ? new Date(p.criado_em).toLocaleString('pt-PT') : '';
-        var descEsc = p.descricao.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        return '<div class="op' + (isFoco ? ' op-foco' : '') + '" id="op-' + p.id + '">'
-          + '<div class="op-tipo">' + p.tipo + '<span class="op-prio">prio ' + p.prioridade + '</span></div>'
-          + '<div class="op-desc">' + p.descricao + '</div>'
-          + valorEth
-          + '<div class="op-ts">' + tsStr + '</div>'
-          + (p.notes ? '<div style="font-size:8px;color:rgba(0,255,247,.3);margin-bottom:8px;">' + p.notes + '</div>' : '')
-          + '<div class="op-acoes">'
-          + '<button class="btn-sign btn-ok" onclick="assinar(\'' + p.id + '\',\'' + descEsc + '\')">✓ ASSINAR</button>'
-          + '<button class="btn-sign btn-rej" onclick="rejeitar(\'' + p.id + '\')">✗ REJEITAR</button>'
-          + '</div></div>';
-      }).join('');
-
-      if (focoId) {
-        setTimeout(function() {
-          var el = document.getElementById('op-' + focoId);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300);
-      }
-
-      log(propostas.length + ' proposta(s) carregada(s)', '#00fff7');
-    })
-    .catch(function(e) {
-      document.getElementById('ops').innerHTML = '<div class="vazio">ERRO AO LER: ' + e.message + ' (tenta Chrome ou wallet browser)</div>';
-      log('erro: ' + e.message, '#ff4444');
+async function getProvider() {
+  if (modoManual) return window.ethereum || null;
+  if (!window.__oraProviderReady) {
+    await new Promise(r => {
+      window.addEventListener('ora-provider-ready', r, { once: true });
+      setTimeout(r, 3000);
     });
-}
-
-// ── LIGAR WALLET ──
-function ligar() {
-  var provider = __oraProvider || window.ethereum;
-  if (!provider) {
-    log('sem wallet · abre este ficheiro no browser da tua wallet', '#ff4444');
-    document.getElementById('qrHint').style.display = 'block';
-    return Promise.resolve(null);
   }
-
-  return provider.request({ method: 'eth_requestAccounts' })
-    .then(function(accs) {
-      __oraAccount = accs[0];
-      document.getElementById('wAddr').textContent = __oraAccount.slice(0,14) + '...';
-
-      return provider.request({ method: 'eth_chainId' }).then(function(chainHex) {
-        var chain = parseInt(chainHex, 16);
-        if (chain !== BASE_CHAIN_ID) {
-          log('chain ' + chain + ' · a mudar para Base (8453)...', '#ffb800');
-          return provider.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x2105' }]
-          }).catch(function() {
-            log('muda manualmente para Base network (8453)', '#ffb800');
-          });
-        }
-      });
-    })
-    .then(function() {
-      var isSagrada = __oraAccount && __oraAccount.toLowerCase() === SAGRADA;
-      var statusEl = document.getElementById('wStatus');
-      statusEl.textContent = isSagrada ? '· WALLET SAGRADA ✓' : '· atenção: não é a wallet sagrada';
-      statusEl.style.color = isSagrada ? '#00ff88' : '#ffb800';
-      log('ligada: ' + __oraAccount, isSagrada ? '#00ff88' : '#ffb800');
-      return __oraAccount;
-    })
-    .catch(function(e) {
-      if (e.code === 4001) {
-        log('ligação recusada pelo utilizador', '#ffb800');
-      } else {
-        log('erro ao ligar: ' + (e.message || e), '#ff4444');
-      }
-      return null;
-    });
+  const p = window.__oraProvider || window.ethereum || null;
+  document.getElementById('wProvider').textContent =
+    (window.__oraProvider && p === window.__oraProvider) ? 'Base Wallet' :
+    (window.ethereum ? 'browser wallet' : 'nenhuma detectada');
+  return p;
 }
 
-function usarOutraCarteira() {
-  __oraAccount = null;
-  __oraProvider = window.ethereum || null;
-  document.getElementById('wAddr').textContent = '—';
+function usarOutra() {
+  modoManual = true; account = null;
+  document.getElementById('wAddr').textContent = '-';
   document.getElementById('wStatus').textContent = '';
-  if (__oraProvider) {
-    document.getElementById('wProvider').textContent = 'CARTEIRA DO BROWSER';
-    log('modo manual · a usar carteira do browser', '#ffb800');
-    ligar();
-  } else {
-    log('sem wallet no browser · abre no browser da tua wallet', '#ff4444');
-    document.getElementById('qrHint').style.display = 'block';
-  }
+  document.getElementById('wProvider').textContent = 'window.ethereum';
+  addLog('modo manual - window.ethereum', '#ffb800');
+  ligar();
 }
 
-// ── ASSINAR ──
-function assinar(id, desc) {
-  var provider = __oraProvider || window.ethereum;
-
-  var doAssinar = function() {
-    if (!__oraAccount || __oraAccount.toLowerCase() !== SAGRADA) {
-      log('apenas a wallet sagrada pode assinar', '#ff4444');
-      return;
+async function ligar() {
+  const p = await getProvider();
+  if (!p) { addLog('sem wallet detectada', '#ff4444'); return null; }
+  try {
+    const accs = await p.request({ method: 'eth_requestAccounts' });
+    account = accs[0];
+    document.getElementById('wAddr').textContent = account.slice(0,12)+'...';
+    const chainHex = await p.request({ method: 'eth_chainId' });
+    if (parseInt(chainHex,16) !== BASE_CHAIN) {
+      addLog('cadeia incorrecta - a mudar para Base...', '#ffb800');
+      try { await p.request({ method:'wallet_switchEthereumChain', params:[{chainId:'0x2105'}] }); }
+      catch(e) { addLog('muda para Base (8453) manualmente', '#ffb800'); }
     }
-    var agora = new Date().toISOString();
-    var mensagem = 'ORUM AUTORIZAÇÃO · Unum · id:' + id + ' · ' + desc.slice(0,80) + ' · ts:' + agora;
-
-    log('a pedir assinatura EIP-191...', '#ffb800');
-
-    provider.request({ method: 'personal_sign', params: [mensagem, __oraAccount] })
-      .then(function(sig) {
-        log('assinatura obtida · a enviar...', '#ffb800');
-        return fetchWithRetry(ASSINAR_URL + '?mode=assinar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: id, mensagem: mensagem, assinatura: sig, wallet: __oraAccount })
-        });
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d.ok) {
-          log('✓ confirmada: ' + (d.mensagem || id), '#00ff88');
-          var el = document.getElementById('op-' + id);
-          if (el) {
-            el.style.opacity = '0.25';
-            el.style.pointerEvents = 'none';
-            el.style.borderColor = 'rgba(0,255,136,.2)';
-          }
-          setTimeout(carregarPropostas, 1500);
-        } else {
-          log('erro: ' + (d.erro || 'desconhecido'), '#ff4444');
-        }
-      })
-      .catch(function(e) {
-        if (e.code === 4001 || (e.message && e.message.includes('reject'))) {
-          log('assinatura cancelada', '#ffb800');
-        } else {
-          log('erro: ' + (e.message || e), '#ff4444');
-        }
-      });
-  };
-
-  if (!__oraAccount) {
-    ligar().then(function(a) { if (a) doAssinar(); });
-  } else {
-    doAssinar();
-  }
+    const sagrada = account.toLowerCase() === SAGRADA;
+    document.getElementById('wStatus').textContent = sagrada ? '- WALLET SAGRADA OK' : '- nao e a wallet sagrada';
+    document.getElementById('wStatus').style.color = sagrada ? '#00ff88' : '#ffb800';
+    addLog('ligada: '+account, sagrada ? '#00ff88' : '#ffb800');
+    return account;
+  } catch(e) { addLog('erro ligacao: '+e.message, '#ff4444'); return null; }
 }
 
-// ── REJEITAR ──
+async function assinar(id, descB64) {
+  if (!account) { const a = await ligar(); if (!a) return; }
+  if (account.toLowerCase() !== SAGRADA) {
+    addLog('apenas wallet sagrada pode assinar', '#ff4444'); return;
+  }
+  const p = await getProvider();
+  const desc = fromB64(descB64);
+  // Mensagem so ASCII - sem acentos, sem pontos centrados
+  // Isto e o que o ethers.js vai verificar no servidor
+  const descClean = desc.replace(/[^ -~]/g, '?');
+  const agora = new Date().toISOString();
+  const msg = 'ORUM AUTH | Unum | id:' + id + ' | ' + descClean.slice(0,80) + ' | ts:' + agora;
+  addLog('mensagem: '+msg.slice(0,60)+'...', 'rgba(0,255,247,.5)');
+  addLog('a pedir assinatura EIP-191...', '#ffb800');
+  try {
+    let sig = null;
+    // Tentativa 1: mensagem como hex (0x...) - Base Wallet mobile prefere isto
+    try {
+      const msgHex = toHex(msg);
+      sig = await p.request({ method:'personal_sign', params:[msgHex, account] });
+      addLog('assinatura obtida (hex)', '#00ff88');
+    } catch(e1) {
+      addLog('hex rejeitado ('+e1.message.slice(0,40)+') - a tentar string...', '#ffb800');
+      // Tentativa 2: string pura - MetaMask, Rainbow
+      sig = await p.request({ method:'personal_sign', params:[msg, account] });
+      addLog('assinatura obtida (string)', '#00ff88');
+    }
+    addLog('a verificar no servidor...', '#ffb800');
+    const r = await fetch(API+'?mode=assinar', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ id, mensagem: msg, assinatura: sig, wallet: account })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      addLog('CONFIRMADA: '+d.mensagem, '#00ff88');
+      const el = document.getElementById('op-'+id);
+      if (el) { el.style.opacity='0.3'; el.style.pointerEvents='none'; }
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      addLog('erro servidor: '+(d.erro||'desconhecido'), '#ff4444');
+    }
+  } catch(e) { addLog('cancelado: '+e.message, '#ff4444'); }
+}
+
 function rejeitar(id) {
-  __oraRejId = id;
+  rejOpId = id;
   document.getElementById('rejBox').style.display = 'block';
   document.getElementById('rejMotivo').value = '';
-  document.getElementById('rejMotivo').focus();
 }
-
 function fecharRej() {
-  document.getElementById('rejBox').style.display = 'none';
-  __oraRejId = null;
+  document.getElementById('rejBox').style.display = 'none'; rejOpId = null;
+}
+async function enviarRejeicao() {
+  const motivo = document.getElementById('rejMotivo').value.trim() || 'rejeitado por Unum';
+  const r = await fetch(API+'?mode=rejeitar', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ id: rejOpId, motivo })
+  });
+  const d = await r.json();
+  if (d.ok) { addLog('rejeitada: '+rejOpId, '#ffb800'); fecharRej(); setTimeout(()=>location.reload(),800); }
+  else addLog('erro rejeitar: '+(d.erro||'?'), '#ff4444');
 }
 
-function enviarRejeicao() {
-  var motivo = document.getElementById('rejMotivo').value.trim() || 'rejeitado por Unum';
-  fetchWithRetry(ASSINAR_URL + '?mode=rejeitar', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id: __oraRejId, motivo: motivo })
-  })
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.ok) {
-        log('rejeitada: ' + __oraRejId, '#ffb800');
-        fecharRej();
-        setTimeout(carregarPropostas, 800);
-      } else {
-        log('erro ao rejeitar: ' + (d.erro || '?'), '#ff4444');
-      }
-    })
-    .catch(function(e) { log('erro: ' + e.message, '#ff4444'); });
+async function carregarPropostas() {
+  try {
+    const r = await fetch(API+'?mode=pendentes');
+    const d = await r.json();
+    propostas = d.propostas || [];
+    document.getElementById('nOps').textContent = propostas.length;
+    document.getElementById('cN').textContent = propostas.length;
+    const ops = document.getElementById('ops');
+    if (propostas.length === 0) {
+      ops.innerHTML = '<div class="vazio">campo limpo - sem propostas pendentes</div>';
+    } else {
+      ops.innerHTML = propostas.map(p => {
+        const descB64 = btoa(unescape(encodeURIComponent(p.descricao || '')));
+        const descSafe = (p.descricao||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        const isFoco = new URLSearchParams(location.search).get('foco') === p.id;
+        const meta = (p.notes||'').match(/sigma=([d.]+).*kappa=([d.]+)/);
+        return '<div class="op'+(isFoco?' op-foco':'')+'" id="op-'+p.id+'">' +
+          '<div class="op-tipo">'+p.tipo+'<span class="op-prio">prio '+p.prioridade+'</span></div>' +
+          '<div class="op-desc">'+descSafe+'</div>' +
+          (p.value_wei && p.value_wei!=='0' ? '<div class="op-valor">'+(Number(p.value_wei)/1e18).toFixed(6)+' ETH &middot; chain '+(p.chain_id||BASE_CHAIN)+'</div>' : '') +
+          '<div class="op-ts">'+new Date(p.criado_em).toLocaleString('pt-PT')+'</div>' +
+          (meta ? '<div class="op-meta">sigma='+meta[1]+' kappa='+meta[2]+'</div>' : '') +
+          '<div class="op-acoes">' +
+          '<button class="btn-sign btn-ok" onclick="assinar('' + p.id + '',''+descB64+'')">&check; ASSINAR</button>' +
+          '<button class="btn-sign btn-rej" onclick="rejeitar('' + p.id + '')">&#10007; REJEITAR</button>' +
+          '</div></div>';
+      }).join('');
+      const foco = document.querySelector('.op-foco');
+      if (foco) setTimeout(()=>foco.scrollIntoView({behavior:'smooth',block:'center'}),300);
+    }
+  } catch(e) { addLog('erro ao carregar propostas: '+e.message, '#ff4444'); }
 }
 
-// ── INIT ──
-detectarProvider();
-actualizarCampo();
-carregarPropostas();
+async function carregarCampo() {
+  try {
+    const r = await fetch(API+'?mode=urgente');
+    const d = await r.json();
+    // buscar estado do campo via ora-page
+    const r2 = await fetch('https://ywabnlhkmhbyewqhbsjm.supabase.co/functions/v1/ora-page?mode=estado');
+    if (r2.ok) {
+      const c = await r2.json();
+      document.getElementById('cDia').textContent = 'D'+(c.dia||'?');
+      document.getElementById('cSigma').textContent = Number(c.sigma||0).toFixed(4);
+      document.getElementById('cEpoca').textContent = c.epoca||'ETERNIDADE';
+    }
+  } catch(e) {}
+}
 
-// Auto-ligar
-setTimeout(function() {
-  var p = __oraProvider || window.ethereum;
+// Inicializar
+(async () => {
+  await carregarPropostas();
+  await carregarCampo();
+  addLog('ORA ASSINAR pronto - '+propostas.length+' proposta(s) carregada(s)');
+  // auto-ligar se ja tem permissao
+  const p = await getProvider();
   if (p) {
-    p.request({ method: 'eth_accounts' })
-      .then(function(accs) { if (accs && accs.length) ligar(); })
-      .catch(function() {});
+    p.request({method:'eth_accounts'}).then(accs=>{ if(accs&&accs.length>0) ligar(); }).catch(()=>{});
   }
-}, 600);
-
-log('ORA ASSINAR · organismo vivo · ETERNIDADE · CI/CD activo · wallet integrada...', 'rgba(0,255,247,.5)');
-
-setInterval(carregarPropostas, 60000);
+})();
 </script>
 </body>
 </html>
