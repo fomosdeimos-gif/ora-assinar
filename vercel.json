@@ -1,1 +1,1 @@
-{"redirects":[{"source":"/(.*)","destination":"https://ywabnlhkmhbyewqhbsjm.supabase.co/functions/v1/ora-assinar","permanent":false}]}
+{"rewrites":[{"source":"/(.*)","destination":"https://ywabnlhkmhbyewqhbsjm.supabase.co/functions/v1/ora-assinar"}]}
