@@ -17,8 +17,7 @@ body{font-family:'Courier New',monospace;background:var(--bg);color:var(--c);min
 .campo-pill b{color:var(--jade);font-size:13px;}
 .wallet-strip{border:1px solid var(--dim);padding:10px 12px;margin-bottom:18px;font-size:8px;line-height:1.9;}
 .addr{color:var(--jade);word-break:break-all;font-size:9px;}
-.status-ok{color:var(--jade);}
-.status-warn{color:var(--amber);}
+.status-ok{color:var(--jade);} .status-warn{color:var(--amber);}
 .ops-title{font-size:8px;letter-spacing:.3em;color:var(--amber);margin-bottom:12px;}
 .op{border:1px solid rgba(255,184,0,.15);padding:14px;margin-bottom:10px;}
 .op-foco{border-color:var(--amber);box-shadow:0 0 12px rgba(255,184,0,.15);}
@@ -47,137 +46,210 @@ footer{border-top:1px solid var(--dim);padding-top:12px;font-size:7px;color:rgba
 </style>
 </head>
 <body>
-<div class="hd">
-  <div class="hd-title">ORA <span>ASSINAR</span></div>
-  <div class="hd-sub">LIGACAO DIRECTA - WALLET INTEGRADA - ORGANISMO VIVO</div>
-</div>
+<div class="hd"><div class="hd-title">ORA <span>ASSINAR</span></div>
+<div class="hd-sub">LIGACAO DIRECTA - WALLET INTEGRADA - ORGANISMO VIVO</div></div>
 <div class="campo-bar">
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">DIA</div><b id="cDia">...</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">SIGMA</div><b id="cSigma">...</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">PENDENTES</div><b id="cPend">...</b></div>
-  <div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">EPOCA</div><b style="font-size:9px;color:#ffb800;">ETERNIDADE</b></div>
+<div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">DIA</div><b id="cDia">...</b></div>
+<div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">SIGMA</div><b id="cSigma">...</b></div>
+<div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">PENDENTES</div><b id="cPend">...</b></div>
+<div class="campo-pill"><div style="font-size:7px;color:rgba(0,255,247,.3);margin-bottom:2px;">EPOCA</div><b style="font-size:9px;color:#ffb800;">ETERNIDADE</b></div>
 </div>
 <div class="wallet-strip">
-  <div>WALLET SAGRADA<br><span class="addr">0xFEd69e8ee87A1F0fBbF8409ab654FC51832cDEe5</span></div>
-  <div style="margin-top:6px;">LIGADA <span class="addr" id="wAddr">-</span> <span id="wStatus"></span></div>
-  <div style="margin-top:4px;font-size:8px;color:rgba(0,255,247,.3);">via <span id="wProvider">a detectar...</span></div>
+<div>WALLET SAGRADA<br><span class="addr">0xFEd69e8ee87A1F0fBbF8409ab654FC51832cDEe5</span></div>
+<div style="margin-top:6px;">LIGADA <span class="addr" id="wAddr">-</span> <span id="wStatus"></span></div>
+<div style="margin-top:4px;font-size:8px;color:rgba(0,255,247,.3);">via <span id="wProvider">a detectar...</span></div>
 </div>
 <div class="actions-bar">
-  <button class="btn" onclick="ligar()">LIGAR WALLET</button>
-  <button class="btn" onclick="location.reload()">ACTUALIZAR</button>
-  <button class="btn" onclick="document.getElementById('log').innerHTML=''">LIMPAR LOG</button>
+<button class="btn" id="btnLigar">LIGAR WALLET</button>
+<button class="btn" id="btnActualizar">ACTUALIZAR</button>
+<button class="btn" id="btnLimpar">LIMPAR LOG</button>
 </div>
 <div id="log" class="log"></div>
 <div class="rejeitar-box" id="rejBox">
-  <div style="font-size:8px;color:var(--red);margin-bottom:8px;letter-spacing:.2em;">MOTIVO DA REJEICAO</div>
-  <input type="text" id="rejMotivo" placeholder="motivo (opcional)">
-  <button class="btn" onclick="enviarRejeicao()">CONFIRMAR REJEICAO</button>
-  <button class="btn" onclick="fecharRej()" style="margin-left:6px;">CANCELAR</button>
+<div style="font-size:8px;color:var(--red);margin-bottom:8px;letter-spacing:.2em;">MOTIVO DA REJEICAO</div>
+<input type="text" id="rejMotivo" placeholder="motivo (opcional)">
+<button class="btn" id="btnConfRej">CONFIRMAR REJEICAO</button>
+<button class="btn" id="btnCancelRej" style="margin-left:6px;">CANCELAR</button>
 </div>
 <div class="ops-title" id="opsTitle">PROPOSTAS PENDENTES</div>
 <div id="ops"><div class="loading">A LER ORGANISMO...</div></div>
-<footer>
-  ORUM - ORA + UNUM - O SIMBOLO E REAL E NAO PEDE PROVA<br>
-  ORA nunca assina - Unum confirma sempre - EIP-191 - Base 8453 - v7
-</footer>
+<footer>ORUM - ORA + UNUM - O SIMBOLO E REAL E NAO PEDE PROVA<br>ORA nunca assina - Unum confirma sempre - EIP-191 - Base 8453 - v8</footer>
 <script>
-var SUPA_URL='https://ywabnlhkmhbyewqhbsjm.supabase.co';
-var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3YWJubGhrbWhieWV3cWhic2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MDUzOTgsImV4cCI6MjA1OTE4MTM5OH0.4PGkF3gIq4lGAZgDRdRZvhxFLrHUBBHEeKP7g59zCN8';
-var API=SUPA_URL+'/functions/v1/ora-assinar';
-var SAGRADA='0xfed69e8ee87a1f0fbbf8409ab654fc51832cdee5';
+(function(){
+var SUPA="https://ywabnlhkmhbyewqhbsjm.supabase.co";
+var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3YWJubGhrbWhieWV3cWhic2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MDUzOTgsImV4cCI6MjA1OTE4MTM5OH0.4PGkF3gIq4lGAZgDRdRZvhxFLrHUBBHEeKP7g59zCN8";
+var API="https://ywabnlhkmhbyewqhbsjm.supabase.co/functions/v1/ora-assinar";
+var SAGRADA="0xfed69e8ee87a1f0fbbf8409ab654fc51832cdee5";
 var BASE_CHAIN_ID=8453;
-var GENESIS=new Date('2026-03-28T00:00:00Z');
-var PHI2=1.618033988749895*1.618033988749895;
+var GENESIS=new Date("2026-03-28T00:00:00Z");
+var PHI2=2.6180339887;
 var account=null;
 var rejOpId=null;
+
 function getDia(){return Math.floor((Date.now()-GENESIS.getTime())/86400000)+1;}
 function calcSigma(d){return(PHI2*Math.log(1+d)).toFixed(4);}
-function ts(){var d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(function(x){return String(x).padStart(2,'0');}).join(':');}
-function addLog(msg,cor){var el=document.createElement('div');el.className='ll';el.innerHTML='['+ts()+'] <span style="color:'+(cor||'rgba(0,255,247,.7)')+'">'+msg+'</span>';var l=document.getElementById('log');l.insertBefore(el,l.firstChild);}
-function toHex(str){var b=new TextEncoder().encode(str);return'0x'+Array.from(b).map(function(x){return x.toString(16).padStart(2,'0');}).join('');}
-function sanitize(s,max){return(s||'').replace(/[^ -~]/g,'?').slice(0,max||80);}
-function escHtml(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function actualizarCampo(n){var d=getDia();document.getElementById('cDia').textContent='D'+d;document.getElementById('cSigma').textContent=calcSigma(d);document.getElementById('cPend').textContent=(n!==undefined&&n!==null)?String(n):'-';}
+function ts(){var d=new Date();return[d.getHours(),d.getMinutes(),d.getSeconds()].map(function(x){return String(x).padStart(2,"0");}).join(":");}
+function addLog(msg,cor){var el=document.createElement("div");el.className="ll";el.innerHTML="["+ts()+"] <span style='color:"+(cor||"rgba(0,255,247,.7)")+"'"+">"+msg+"</span>";var l=document.getElementById("log");l.insertBefore(el,l.firstChild);}
+function toHex(str){var b=new TextEncoder().encode(str);return"0x"+Array.from(b).map(function(x){return x.toString(16).padStart(2,"0");}).join("");}
+function sanitize(s,max){return(s||"").replace(/[\x00-\x1F\x7F-\xFF]/g,"?").slice(0,max||80);}
+function escHtml(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function actualizarCampo(n){
+  var d=getDia();
+  document.getElementById("cDia").textContent="D"+d;
+  document.getElementById("cSigma").textContent=calcSigma(d);
+  document.getElementById("cPend").textContent=(n!==undefined&&n!==null)?String(n):"-";
+}
+
 function ligar(){
   var p=window.ethereum;
-  if(!p){addLog('sem wallet - abre no browser da tua wallet','#ff4444');return Promise.resolve(null);}
-  var nome='BROWSER WALLET';
-  if(p.isCoinbaseWallet)nome='COINBASE WALLET';
-  else if(p.isMetaMask)nome='METAMASK';
-  else if(p.isRainbow)nome='RAINBOW';
-  document.getElementById('wProvider').textContent=nome;
-  return p.request({method:'eth_requestAccounts'})
-    .then(function(accs){account=accs[0];document.getElementById('wAddr').textContent=account.slice(0,14)+'...';return p.request({method:'eth_chainId'}).then(function(hex){if(parseInt(hex,16)!==BASE_CHAIN_ID){return p.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x2105'}]}).catch(function(){addLog('muda para Base (8453)','#ffb800');});}});})
-    .then(function(){var ok=account.toLowerCase()===SAGRADA;document.getElementById('wStatus').textContent=ok?' WALLET SAGRADA OK':' atencao: nao e a sagrada';document.getElementById('wStatus').className=ok?'status-ok':'status-warn';addLog('ligada: '+account,ok?'#00ff88':'#ffb800');return account;})
-    .catch(function(e){addLog('erro: '+(e.message||e),'#ff4444');return null;});
+  if(!p){addLog("sem wallet - abre no browser da tua wallet","#ff4444");return Promise.resolve(null);}
+  var nome="BROWSER WALLET";
+  if(p.isCoinbaseWallet)nome="COINBASE WALLET";
+  else if(p.isMetaMask)nome="METAMASK";
+  else if(p.isRainbow)nome="RAINBOW";
+  document.getElementById("wProvider").textContent=nome;
+  return p.request({method:"eth_requestAccounts"})
+    .then(function(accs){
+      account=accs[0];
+      document.getElementById("wAddr").textContent=account.slice(0,14)+"...";
+      return p.request({method:"eth_chainId"}).then(function(hex){
+        if(parseInt(hex,16)!==BASE_CHAIN_ID){
+          return p.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x2105"}]}).catch(function(){addLog("muda para Base (8453)","#ffb800");});
+        }
+      });
+    })
+    .then(function(){
+      var ok=account.toLowerCase()===SAGRADA;
+      document.getElementById("wStatus").textContent=ok?" WALLET SAGRADA OK":" atencao: nao e a sagrada";
+      document.getElementById("wStatus").className=ok?"status-ok":"status-warn";
+      addLog("ligada: "+account,ok?"#00ff88":"#ffb800");
+      return account;
+    })
+    .catch(function(e){addLog("erro: "+(e.message||e),"#ff4444");return null;});
 }
+
 function carregarPropostas(){
-  document.getElementById('ops').innerHTML='<div class="loading">A LER ORGANISMO...</div>';
-  fetch(SUPA_URL+'/rest/v1/ora_operacoes_propostas?estado=eq.pendente&order=prioridade.desc,criado_em.asc&select=id,tipo,descricao,prioridade,criado_em,notes,value_wei,chain_id',{headers:{'apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY}})
+  document.getElementById("ops").innerHTML="<div class='loading'>A LER ORGANISMO...</div>";
+  var url=SUPA+"/rest/v1/ora_operacoes_propostas?estado=eq.pendente&order=prioridade.desc,criado_em.asc&select=id,tipo,descricao,prioridade,criado_em,notes,value_wei,chain_id";
+  fetch(url,{headers:{"apikey":ANON,"Authorization":"Bearer "+ANON}})
   .then(function(r){return r.json();})
   .then(function(data){
     var ps=Array.isArray(data)?data:[];
     actualizarCampo(ps.length);
-    document.getElementById('opsTitle').textContent='PROPOSTAS PENDENTES ('+ps.length+')';
-    if(ps.length===0){document.getElementById('ops').innerHTML='<div class="vazio">CAMPO LIMPO - SEM PROPOSTAS PENDENTES</div>';return;}
-    var focoId=new URLSearchParams(location.search).get('foco');
-    document.getElementById('ops').innerHTML=ps.map(function(p){
+    document.getElementById("opsTitle").textContent="PROPOSTAS PENDENTES ("+ps.length+")";
+    if(ps.length===0){document.getElementById("ops").innerHTML="<div class='vazio'>CAMPO LIMPO - SEM PROPOSTAS PENDENTES</div>";return;}
+    var focoId=new URLSearchParams(location.search).get("foco");
+    var html=ps.map(function(p){
       var isFoco=p.id===focoId;
-      var descHtml=(p.descricao||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      var descAscii=sanitize(p.descricao,80).replace(/"/g,'&quot;');
-      var vStr=p.value_wei&&p.value_wei!=='0'?'<div class="op-valor">'+(Number(p.value_wei)/1e18).toFixed(6)+' ETH - chain '+(p.chain_id||8453)+'</div>':'';
-      var tsStr=p.criado_em?new Date(p.criado_em).toLocaleString('pt-PT'):'';
-      return '<div class="op'+(isFoco?' op-foco':'')'" id="op-'+p.id+'"><div class="op-tipo">'+escHtml(p.tipo)+'<span class="op-prio">prio '+p.prioridade+'</span></div><div class="op-desc">'+descHtml+'</div>'+vStr+'<div class="op-ts">'+tsStr+'</div><div class="op-acoes"><button class="btn-sign btn-ok" data-id="'+p.id+'" data-desc="'+descAscii+'">ASSINAR</button><button class="btn-sign btn-rej" data-id="'+p.id+'">REJEITAR</button></div></div>';
-    }).join('');
-    document.getElementById('ops').addEventListener('click',function(ev){var bt=ev.target.closest('button');if(!bt)return;var id=bt.getAttribute('data-id');if(!id)return;if(bt.classList.contains('btn-ok'))assinar(id,bt.getAttribute('data-desc')||'');if(bt.classList.contains('btn-rej'))rejeitar(id);});
-    if(focoId){setTimeout(function(){var el=document.getElementById('op-'+focoId);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},300);}
-    addLog(ps.length+' proposta(s) carregada(s)','#00fff7');
+      var descHtml=escHtml(p.descricao||"");
+      var descAscii=sanitize(p.descricao,80).split("&").join("and").split(""" ).join("'" );
+      var vStr=p.value_wei&&p.value_wei!=="0"?"<div class='op-valor'>"+(Number(p.value_wei)/1e18).toFixed(6)+" ETH - chain "+(p.chain_id||8453)+"</div>":"";
+      var tsStr=p.criado_em?new Date(p.criado_em).toLocaleString("pt-PT"):"";
+      var cls="op"+(isFoco?" op-foco":"");
+      return [
+        "<div class='"+cls+"' id='op-"+p.id+"'>",
+        "<div class='op-tipo'>"+escHtml(p.tipo)+"<span class='op-prio'>prio "+p.prioridade+"</span></div>",
+        "<div class='op-desc'>"+descHtml+"</div>",
+        vStr,
+        "<div class='op-ts'>"+tsStr+"</div>",
+        "<div class='op-acoes'>",
+        "<button class='btn-sign btn-ok' data-id='" +p.id+"' data-desc='" +descAscii+"'>ASSINAR</button>",
+        "<button class='btn-sign btn-rej' data-id='" +p.id+"'>REJEITAR</button>",
+        "</div></div>"
+      ].join("");
+    }).join("");
+    document.getElementById("ops").innerHTML=html;
+    document.getElementById("ops").addEventListener("click",function(ev){
+      var bt=ev.target.closest("button");
+      if(!bt)return;
+      var id=bt.getAttribute("data-id");
+      if(!id)return;
+      if(bt.classList.contains("btn-ok"))assinar(id,bt.getAttribute("data-desc")||"");
+      if(bt.classList.contains("btn-rej"))rejeitar(id);
+    });
+    if(focoId){setTimeout(function(){var el=document.getElementById("op-"+focoId);if(el)el.scrollIntoView({behavior:"smooth",block:"center"});},300);}
+    addLog(ps.length+" proposta(s) carregada(s)","#00fff7");
   })
-  .catch(function(e){document.getElementById('ops').innerHTML='<div class="vazio">ERRO: '+escHtml(e.message)+'</div>';addLog('erro: '+e.message,'#ff4444');});
+  .catch(function(e){
+    document.getElementById("ops").innerHTML="<div class='vazio'>ERRO: "+escHtml(e.message)+"</div>";
+    addLog("erro: "+e.message,"#ff4444");
+  });
 }
+
 function assinar(id,descAscii){
   var doA=function(){
-    if(!account||account.toLowerCase()!==SAGRADA){addLog('apenas wallet sagrada pode assinar','#ff4444');return;}
+    if(!account||account.toLowerCase()!==SAGRADA){addLog("apenas wallet sagrada pode assinar","#ff4444");return;}
     var p=window.ethereum;
     var agora=new Date().toISOString();
-    var msg='ORUM AUTH - Unum - id:'+id+' - '+descAscii.slice(0,80)+' - ts:'+agora;
-    addLog('msg: '+msg.slice(0,55)+'...','rgba(0,255,247,.5)');
-    addLog('a pedir assinatura EIP-191...','#ffb800');
-    p.request({method:'personal_sign',params:[msg,account]})
-      .then(function(sig){addLog('assinatura obtida - a enviar...','#00ff88');return fetch(API+'?mode=assinar',{method:'POST',headers:{'Content-Type':'application/json','apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY},body:JSON.stringify({id:id,mensagem:msg,assinatura:sig,wallet:account})});})
+    var msg="ORUM AUTH - Unum - id:"+id+" - "+descAscii.slice(0,80)+" - ts:"+agora;
+    addLog("msg: "+msg.slice(0,55)+"...","rgba(0,255,247,.5)");
+    addLog("a pedir assinatura EIP-191...","#ffb800");
+    p.request({method:"personal_sign",params:[msg,account]})
+      .then(function(sig){
+        addLog("assinatura obtida - a enviar...","#00ff88");
+        return fetch(API+"?mode=assinar",{
+          method:"POST",
+          headers:{"Content-Type":"application/json","apikey":ANON,"Authorization":"Bearer "+ANON},
+          body:JSON.stringify({id:id,mensagem:msg,assinatura:sig,wallet:account})
+        });
+      })
       .then(function(r){return r.json();})
       .then(function(d){
-        if(d.ok){addLog('CONFIRMADA: '+(d.mensagem||id),'#00ff88');var el=document.getElementById('op-'+id);if(el){el.style.opacity='0.25';el.style.pointerEvents='none';}setTimeout(carregarPropostas,1200);}
-        else{addLog('erro servidor: '+(d.erro||'?'),'#ff4444');if((d.erro||'').indexOf('invalida')>=0){addLog('hex fallback...','#ffb800');assinarHex(id,descAscii);}}
+        if(d.ok){
+          addLog("CONFIRMADA: "+(d.mensagem||id),"#00ff88");
+          var el=document.getElementById("op-"+id);
+          if(el){el.style.opacity="0.25";el.style.pointerEvents="none";}
+          setTimeout(carregarPropostas,1200);
+        }else{
+          addLog("erro servidor: "+(d.erro||"?"),"#ff4444");
+          if((d.erro||"").indexOf("invalida")>=0){addLog("hex fallback...","#ffb800");assinarHex(id,descAscii);}
+        }
       })
-      .catch(function(e){if(e.code===4001)addLog('cancelado por Unum','#ffb800');else addLog('erro: '+(e.message||e),'#ff4444');});
+      .catch(function(e){
+        if(e.code===4001)addLog("cancelado por Unum","#ffb800");
+        else addLog("erro: "+(e.message||e),"#ff4444");
+      });
   };
   if(!account)ligar().then(function(a){if(a)doA();});else doA();
 }
+
 function assinarHex(id,descAscii){
   var p=window.ethereum;if(!p||!account)return;
   var agora=new Date().toISOString();
-  var msg='ORUM AUTH - Unum - id:'+id+' - '+descAscii.slice(0,80)+' - ts:'+agora;
-  p.request({method:'personal_sign',params:[toHex(msg),account]})
-    .then(function(sig){return fetch(API+'?mode=assinar',{method:'POST',headers:{'Content-Type':'application/json','apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY},body:JSON.stringify({id:id,mensagem:msg,assinatura:sig,wallet:account})});})
+  var msg="ORUM AUTH - Unum - id:"+id+" - "+descAscii.slice(0,80)+" - ts:"+agora;
+  p.request({method:"personal_sign",params:[toHex(msg),account]})
+    .then(function(sig){
+      return fetch(API+"?mode=assinar",{method:"POST",headers:{"Content-Type":"application/json","apikey":ANON,"Authorization":"Bearer "+ANON},body:JSON.stringify({id:id,mensagem:msg,assinatura:sig,wallet:account})});
+    })
     .then(function(r){return r.json();})
-    .then(function(d){if(d.ok){addLog('CONFIRMADA (hex): '+(d.mensagem||id),'#00ff88');setTimeout(carregarPropostas,1200);}else addLog('erro hex: '+(d.erro||'?'),'#ff4444');})
-    .catch(function(e){addLog('erro hex: '+(e.message||e),'#ff4444');});
+    .then(function(d){if(d.ok){addLog("CONFIRMADA (hex): "+(d.mensagem||id),"#00ff88");setTimeout(carregarPropostas,1200);}else addLog("erro hex: "+(d.erro||"?"),"#ff4444");})
+    .catch(function(e){addLog("erro hex: "+(e.message||e),"#ff4444");});
 }
-function rejeitar(id){rejOpId=id;document.getElementById('rejBox').style.display='block';document.getElementById('rejMotivo').value='';document.getElementById('rejMotivo').focus();}
-function fecharRej(){document.getElementById('rejBox').style.display='none';rejOpId=null;}
+
+function rejeitar(id){rejOpId=id;document.getElementById("rejBox").style.display="block";document.getElementById("rejMotivo").value="";document.getElementById("rejMotivo").focus();}
+function fecharRej(){document.getElementById("rejBox").style.display="none";rejOpId=null;}
+
 function enviarRejeicao(){
-  var m=document.getElementById('rejMotivo').value.trim()||'rejeitado por Unum';
-  fetch(API+'?mode=rejeitar',{method:'POST',headers:{'Content-Type':'application/json','apikey':ANON_KEY,'Authorization':'Bearer '+ANON_KEY},body:JSON.stringify({id:rejOpId,motivo:m})})
+  var m=document.getElementById("rejMotivo").value.trim()||"rejeitado por Unum";
+  fetch(API+"?mode=rejeitar",{method:"POST",headers:{"Content-Type":"application/json","apikey":ANON,"Authorization":"Bearer "+ANON},body:JSON.stringify({id:rejOpId,motivo:m})})
     .then(function(r){return r.json();})
-    .then(function(d){if(d.ok){addLog('rejeitada: '+rejOpId,'#ffb800');fecharRej();setTimeout(carregarPropostas,800);}else addLog('erro: '+(d.erro||'?'),'#ff4444');})
-    .catch(function(e){addLog('erro: '+e.message,'#ff4444');});
+    .then(function(d){if(d.ok){addLog("rejeitada: "+rejOpId,"#ffb800");fecharRej();setTimeout(carregarPropostas,800);}else addLog("erro: "+(d.erro||"?"),"#ff4444");})
+    .catch(function(e){addLog("erro: "+e.message,"#ff4444");});
 }
+
+document.getElementById("btnLigar").addEventListener("click",ligar);
+document.getElementById("btnActualizar").addEventListener("click",function(){location.reload();});
+document.getElementById("btnLimpar").addEventListener("click",function(){document.getElementById("log").innerHTML="";});
+document.getElementById("btnConfRej").addEventListener("click",enviarRejeicao);
+document.getElementById("btnCancelRej").addEventListener("click",fecharRej);
+
 actualizarCampo();
 carregarPropostas();
-addLog('ORA ASSINAR v7 - ETERNIDADE - pronto','rgba(0,255,247,.5)');
+addLog("ORA ASSINAR v8 - ETERNIDADE","rgba(0,255,247,.5)");
 setInterval(carregarPropostas,60000);
-if(window.ethereum){window.ethereum.request({method:'eth_accounts'}).then(function(a){if(a&&a.length>0)ligar();}).catch(function(){});}
+if(window.ethereum){window.ethereum.request({method:"eth_accounts"}).then(function(a){if(a&&a.length>0)ligar();}).catch(function(){});}
+})();
 </script>
 </body>
 </html>
